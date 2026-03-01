@@ -13,11 +13,28 @@ function escapeHtml(str) {
 }
 
 /**
- * Sanitize markdown-like text (bold only) for safe HTML display
- * Escapes HTML first, then converts **bold** and newlines
+ * Render markdown text to safe HTML using marked.js
+ * Falls back to simple bold/newline conversion if marked is not loaded
  */
 function sanitizeMarkdown(text) {
   if (!text) return '';
+
+  // Use marked.js if available (loaded on diagnosis page)
+  if (typeof marked !== 'undefined') {
+    try {
+      marked.setOptions({
+        breaks: true,       // GitHub-flavored line breaks
+        gfm: true,          // GitHub-flavored markdown (tables, strikethrough)
+        headerIds: false,    // No auto-generated header IDs
+        mangle: false        // Don't mangle email addresses
+      });
+      return marked.parse(text);
+    } catch (e) {
+      console.warn('Marked.js parse error:', e);
+    }
+  }
+
+  // Fallback: simple regex-based conversion
   let safe = escapeHtml(text);
   safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   safe = safe.replace(/\n/g, '<br>');

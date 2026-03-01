@@ -2,12 +2,13 @@
    MedVision AI — Diagnosis Page Styles
    ========================================== */
 
-/* Split layout */
+/* Split layout (diagnosis | resize-handle | chat) */
 .diagnosis-layout {
     display: grid;
-    grid-template-columns: 1fr var(--chat-panel-width);
+    grid-template-columns: 1fr 6px var(--chat-panel-width);
     gap: 0;
     min-height: calc(100vh - var(--header-height));
+    transition: grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Left panel — Image area */

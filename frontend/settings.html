@@ -296,27 +296,54 @@
                         </div>
                     </div>
 
-                    <!-- LLM Configuration -->
+                    <!-- LLM Configuration — Groq -->
                     <div class="settings-card animate-fadeInUp">
-                        <div class="card-title"><i class="fa-solid fa-robot"></i> Cấu hình LLM (Trợ lý AI)</div>
+                        <div class="card-title"><i class="fa-solid fa-robot"></i> Cấu hình LLM — Groq API</div>
                         <div class="card-content">
                             <div class="form-group">
-                                <label class="form-label">Nhà cung cấp</label>
-                                <select class="form-select">
-                                    <option value="gemini">Google Gemini</option>
-                                    <option value="openai">OpenAI (GPT-4o)</option>
-                                    <option value="anthropic">Anthropic (Claude)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">API Key</label>
+                                <label class="form-label">Groq API Key <span class="required">*</span></label>
                                 <div class="api-key-input">
-                                    <input type="password" class="form-input" placeholder="Nhập API Key..."
-                                        id="apiKeyInput">
-                                    <button class="btn btn-secondary btn-sm" onclick="toggleApiKey()"><i
-                                            class="fa-solid fa-eye"></i></button>
+                                    <input type="password" class="form-input" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx"
+                                        id="groqApiKey">
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleApiKey()" title="Hiện/ẩn">
+                                        <i class="fa-solid fa-eye" id="apiKeyEyeIcon"></i>
+                                    </button>
                                 </div>
-                                <div class="form-hint">API Key được lưu trữ an toàn trên server.</div>
+                                <div class="form-hint">
+                                    Lấy API Key miễn phí tại <a href="https://console.groq.com/keys" target="_blank"
+                                        style="color: var(--primary);">console.groq.com/keys</a>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <select class="form-select" id="groqModel">
+                                    <option value="openai/gpt-oss-120b" selected>OpenAI GPT-OSS 120B (Reasoning)
+                                    </option>
+                                    <option value="openai/gpt-oss-20b">OpenAI GPT-OSS 20B (Nhanh hơn)</option>
+                                    <option value="qwen/qwen3-32b">Qwen 3 32B</option>
+                                </select>
+                                <div class="form-hint">GPT-OSS 120B cho kết quả tốt nhất. GPT-OSS 20B nhanh hơn cho
+                                    demo.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Reasoning Effort</label>
+                                <select class="form-select" id="groqReasoningEffort">
+                                    <option value="low">Low — Nhanh, ít suy luận</option>
+                                    <option value="medium" selected>Medium — Cân bằng (Khuyến nghị)</option>
+                                    <option value="high">High — Suy luận sâu, chậm hơn</option>
+                                </select>
+                                <div class="form-hint">Mức độ suy luận của model. Medium phù hợp cho hầu hết trường hợp.
+                                </div>
+                            </div>
+
+                            <div class="form-group"
+                                style="margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--border-light);">
+                                <button class="btn btn-accent" onclick="testGroqConnection()" id="btnTestConnection">
+                                    <i class="fa-solid fa-plug"></i> Test kết nối
+                                </button>
+                                <div id="connectionStatus" style="margin-top: var(--space-md); display: none;"></div>
                             </div>
 
                             <div class="setting-row">
@@ -325,7 +352,7 @@
                                     <div class="setting-desc">LLM tự động đưa ra nhận xét khi có kết quả detection</div>
                                 </div>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="autoAnalysis">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -336,7 +363,7 @@
                                     <div class="setting-desc">Luôn hiển thị cảnh báo "AI chỉ mang tính tham khảo"</div>
                                 </div>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="showDisclaimer">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -353,18 +380,19 @@
                                     <div class="setting-desc">Tự động đăng xuất sau 30 phút không hoạt động</div>
                                 </div>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="autoLogout">
                                     <span class="slider"></span>
                                 </label>
                             </div>
 
                             <div class="setting-row">
                                 <div class="setting-info">
-                                    <div class="setting-name">Thông báo khi phát hiện khối u</div>
-                                    <div class="setting-desc">Hiển thị thông báo nổi bật khi AI phát hiện khối u</div>
+                                    <div class="setting-name">Thông báo khi phát hiện tổn thương nghi ngờ</div>
+                                    <div class="setting-desc">Hiển thị thông báo nổi bật khi AI phát hiện tổn thương
+                                    </div>
                                 </div>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="alertOnDetection">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -382,7 +410,7 @@
                 </div>
 
                 <div class="version-info">
-                    <p>MedVision AI v1.0.0 • © 2026 • Powered by YOLOv8 + LLM</p>
+                    <p>MedVision AI v1.1.0 • © 2026 • Powered by YOLOv8 + Groq (GPT-OSS 120B)</p>
                 </div>
             </div>
         </main>
@@ -391,20 +419,138 @@
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>if (!checkAuth()) throw new Error('Not authenticated');</script>
+    <script src="assets/js/services/ai-service.js"></script>
     <script>
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load Groq settings
+            const apiKey = Store.get('groq_api_key', '');
+            if (apiKey) {
+                document.getElementById('groqApiKey').value = apiKey;
+            }
+
+            const model = Store.get('groq_model', 'openai/gpt-oss-120b');
+            document.getElementById('groqModel').value = model;
+
+            const effort = Store.get('groq_reasoning_effort', 'medium');
+            document.getElementById('groqReasoningEffort').value = effort;
+
+            // Load AI config
+            const confVal = Store.get('conf_threshold', 50);
+            const confSlider = document.getElementById('confThreshold');
+            if (confSlider) {
+                confSlider.value = confVal;
+                document.getElementById('confValue').textContent = confVal + '%';
+            }
+
+            const pixelSpacing = Store.get('pixel_spacing', 0.5);
+            const psInput = document.querySelector('input[type="number"][step="0.01"]');
+            if (psInput) psInput.value = pixelSpacing;
+        });
+
         function toggleApiKey() {
-            const input = document.getElementById('apiKeyInput');
-            input.type = input.type === 'password' ? 'text' : 'password';
+            const input = document.getElementById('groqApiKey');
+            const icon = document.getElementById('apiKeyEyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
         }
 
         function saveSettings() {
+            // Save Groq API Key
+            const apiKey = document.getElementById('groqApiKey').value.trim();
+            Store.set('groq_api_key', apiKey);
+
+            // Save model selection
+            const model = document.getElementById('groqModel').value;
+            Store.set('groq_model', model);
+            AiService.MODEL = model;
+
+            // Save reasoning effort
+            const effort = document.getElementById('groqReasoningEffort').value;
+            Store.set('groq_reasoning_effort', effort);
+
+            // Save confidence threshold
+            const confThreshold = document.getElementById('confThreshold')?.value || 50;
+            Store.set('conf_threshold', parseInt(confThreshold));
+
+            // Save pixel spacing
+            const psInput = document.querySelector('input[type="number"][step="0.01"]');
+            if (psInput) Store.set('pixel_spacing', parseFloat(psInput.value));
+
             showToast('success', 'Đã lưu', 'Cài đặt đã được cập nhật thành công.');
+        }
+
+        async function testGroqConnection() {
+            const btn = document.getElementById('btnTestConnection');
+            const status = document.getElementById('connectionStatus');
+
+            // Save API key first
+            const apiKey = document.getElementById('groqApiKey').value.trim();
+            if (!apiKey) {
+                status.style.display = 'block';
+                status.innerHTML = '<div style="color: var(--danger); font-size: 13px;"><i class="fa-solid fa-circle-xmark"></i> Vui lòng nhập API Key trước.</div>';
+                return;
+            }
+
+            // Temporarily save key for test
+            Store.set('groq_api_key', apiKey);
+            const model = document.getElementById('groqModel').value;
+            AiService.MODEL = model;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang test...';
+            status.style.display = 'block';
+            status.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px;"><i class="fa-solid fa-circle-notch fa-spin"></i> Đang kết nối tới Groq API...</div>';
+
+            const result = await AiService.testConnection();
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-plug"></i> Test kết nối';
+
+            if (result.ok) {
+                status.innerHTML = `
+                    <div style="background: var(--success-light); padding: var(--space-md); border-radius: var(--radius-sm); font-size: 13px;">
+                        <div style="color: var(--success-dark); font-weight: 600; margin-bottom: var(--space-xs);">
+                            <i class="fa-solid fa-circle-check"></i> Kết nối thành công!
+                        </div>
+                        <div style="color: var(--text-secondary);">
+                            Model: <strong>${result.model}</strong><br>
+                            Tokens: ${result.usage?.total_tokens || 'N/A'}
+                        </div>
+                    </div>`;
+                showToast('success', 'Thành công', 'Kết nối Groq API thành công!');
+            } else {
+                status.innerHTML = `
+                    <div style="background: var(--danger-light); padding: var(--space-md); border-radius: var(--radius-sm); font-size: 13px;">
+                        <div style="color: var(--danger); font-weight: 600; margin-bottom: var(--space-xs);">
+                            <i class="fa-solid fa-circle-xmark"></i> Kết nối thất bại!
+                        </div>
+                        <div style="color: var(--text-secondary);">Lỗi: ${escapeHtml(result.error)}</div>
+                    </div>`;
+                showToast('error', 'Thất bại', 'Không thể kết nối tới Groq API.');
+            }
         }
 
         function clearDemoData() {
             if (confirm('Bạn có chắc muốn xóa tất cả dữ liệu demo? Hành động này không thể hoàn tác.')) {
+                // Save API key before clearing
+                const apiKey = Store.get('groq_api_key', '');
+                const model = Store.get('groq_model', '');
+                const effort = Store.get('groq_reasoning_effort', '');
+
                 localStorage.clear();
-                showToast('info', 'Đã xóa', 'Tất cả dữ liệu demo đã được xóa.');
+
+                // Restore API key
+                if (apiKey) Store.set('groq_api_key', apiKey);
+                if (model) Store.set('groq_model', model);
+                if (effort) Store.set('groq_reasoning_effort', effort);
+
+                showToast('info', 'Đã xóa', 'Dữ liệu demo đã được xóa (API Key được giữ lại).');
                 setTimeout(() => location.reload(), 1000);
             }
         }

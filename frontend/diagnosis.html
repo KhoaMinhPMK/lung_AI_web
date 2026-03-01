@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/diagnosis.css">
     <link rel="stylesheet" href="assets/css/chat.css">
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
@@ -179,6 +181,13 @@
                     </div>
                 </div>
 
+                <!-- RESIZE HANDLE -->
+                <div class="resize-handle" id="resizeHandle" title="Kéo để thay đổi kích thước">
+                    <div class="resize-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+
                 <!-- RIGHT: Chat Panel -->
                 <div class="chat-panel" id="chatPanel">
                     <div class="chat-header">
@@ -186,6 +195,12 @@
                         <div class="chat-info">
                             <h3>Trợ lý Y khoa AI</h3>
                             <div class="chat-status">Online</div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="btn-chat-expand" id="btnExpandChat" onclick="toggleChatExpand()"
+                                title="Mở rộng">
+                                <i class="fa-solid fa-expand" id="expandIcon"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -238,6 +253,64 @@
     <script>initPageLayout('diagnosis', 'Chẩn đoán mới', 'Upload ảnh MRI phổi để AI hỗ trợ phát hiện tổn thương', '<button class="btn btn-secondary d-none" id="btnToggleChat" onclick="toggleChat()"><i class="fa-solid fa-robot"></i> Chat AI</button>');</script>
     <script src="assets/js/diagnosis.js"></script>
     <script src="assets/js/chat.js"></script>
+    <script>
+        // ===== Chat Panel Expand / Resize Logic =====
+        let chatExpanded = false;
+        let isResizing = false;
+
+        function toggleChatExpand() {
+            const layout = document.querySelector('.diagnosis-layout');
+            const icon = document.getElementById('expandIcon');
+            chatExpanded = !chatExpanded;
+
+            if (chatExpanded) {
+                layout.style.gridTemplateColumns = '1fr 6px 60%';
+                icon.className = 'fa-solid fa-compress';
+            } else {
+                layout.style.gridTemplateColumns = '1fr 6px 380px';
+                icon.className = 'fa-solid fa-expand';
+            }
+        }
+
+        // Drag resize
+        const resizeHandle = document.getElementById('resizeHandle');
+        if (resizeHandle) {
+            resizeHandle.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+                resizeHandle.classList.add('active');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                const layout = document.querySelector('.diagnosis-layout');
+                const layoutRect = layout.getBoundingClientRect();
+                const chatWidth = layoutRect.right - e.clientX;
+                const minWidth = 300;
+                const maxWidth = layoutRect.width * 0.7;
+                const clampedWidth = Math.max(minWidth, Math.min(maxWidth, chatWidth));
+                layout.style.gridTemplateColumns = `1fr 6px ${clampedWidth}px`;
+                layout.style.transition = 'none';
+
+                // Update expand state
+                chatExpanded = clampedWidth > 500;
+                const icon = document.getElementById('expandIcon');
+                icon.className = chatExpanded ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                    resizeHandle.classList.remove('active');
+                    document.querySelector('.diagnosis-layout').style.transition = '';
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

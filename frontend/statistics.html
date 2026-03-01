@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê & Báo cáo — MedVision AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/statistics.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">🫁</div>
+                <div class="logo-text"><span>MedVision AI</span><span>Medical Imaging</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Chức năng chính</div>
+                    <a href="index.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-pie"></i></span><span>Dashboard</span></a>
+                    <a href="diagnosis.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-microscope"></i></span><span>Chẩn đoán mới</span></a>
+                    <a href="patients.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-hospital-user"></i></span><span>Quản lý bệnh nhân</span></a>
+                    <a href="statistics.html" class="nav-item active"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-line"></i></span><span>Thống kê & Báo cáo</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Hệ thống</div>
+                    <a href="settings.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-gear"></i></span><span>Cài đặt</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-user">
+                <div class="user-avatar">BS</div>
+                <div class="user-info">
+                    <div class="user-name">Bác sĩ Nguyễn Văn A</div>
+                    <div class="user-role">Chẩn đoán hình ảnh</div>
+                </div>
+                <button class="user-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="page-header-left">
+                    <div>
+                        <h1 class="page-title">Thống kê & Báo cáo</h1>
+                        <p class="page-subtitle">Phân tích dữ liệu chẩn đoán và xu hướng bệnh</p>
+                    </div>
+                </div>
+                <div class="page-header-right">
+                    <button class="btn btn-accent" onclick="showAISummary()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Tổng hợp
+                    </button>
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-pdf"></i> Xuất PDF</button>
+                        <button class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-excel"></i> Xuất
+                            Excel</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <!-- Toolbar -->
+                <div class="stats-toolbar animate-fadeInUp">
+                    <div class="date-range-picker">
+                        <input type="date" id="dateFrom" value="2025-03-01">
+                        <span class="separator-text">đến</span>
+                        <input type="date" id="dateTo" value="2026-03-01">
+                    </div>
+                    <div class="quick-date-buttons">
+                        <button class="chip active">1 năm</button>
+                        <button class="chip">6 tháng</button>
+                        <button class="chip">3 tháng</button>
+                        <button class="chip">30 ngày</button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-grid stagger mb-xl">
+                    <div class="stat-card blue animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-microscope"></i></div>
+                        <div class="stat-value">356</div>
+                        <div class="stat-label">Tổng ca chẩn đoán</div>
+                    </div>
+                    <div class="stat-card red animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Ca phát hiện u (13.2%)</div>
+                    </div>
+                    <div class="stat-card orange animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-ruler"></i></div>
+                        <div class="stat-value">9.4mm</div>
+                        <div class="stat-label">Kích thước TB khối u</div>
+                    </div>
+                    <div class="stat-card green animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="stat-value">93.8%</div>
+                        <div class="stat-label">Confidence TB</div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Trend chart -->
+                    <div class="chart-card chart-card-full animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-line"></i> Xu hướng ca chẩn đoán theo tháng</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="trendChart"></canvas></div>
+                    </div>
+
+                    <!-- Size distribution -->
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-bar"></i> Phân bố kích thước khối u</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="sizeChart"></canvas></div>
+                    </div>
+
+                    <!-- Age distribution -->
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-users"></i> Phân bố theo nhóm tuổi</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="ageChart"></canvas></div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-venus-mars"></i> Phân bố theo giới tính</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="genderChart"></canvas></div>
+                    </div>
+
+                    <!-- Severity -->
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-gauge-high"></i> Phân bố mức độ nghiêm trọng</h3>
+                        </div>
+                        <div class="chart-body"><canvas id="severityChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI Summary Modal -->
+    <div class="modal-overlay" id="aiSummaryModal">
+        <div class="modal" style="max-width: 640px;">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-wand-magic-sparkles"></i> AI Tổng hợp</h2>
+                <button class="modal-close" onclick="closeAISummary()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="ai-summary-content" id="aiSummaryContent">
+                    <div style="text-align:center; padding:24px;">
+                        <div class="loading-spinner" style="margin: 0 auto;"></div>
+                        <p style="margin-top:16px; color: var(--text-secondary);">AI đang phân tích dữ liệu...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAISummary()">Đóng</button>
+                <button class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Xuất báo cáo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>if (!checkAuth()) throw new Error('Not authenticated');</script>
+    <script src="assets/js/statistics.js"></script>
+</body>
+
+</html>

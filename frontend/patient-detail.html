@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bệnh nhân — MedVision AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/patients.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">🫁</div>
+                <div class="logo-text"><span>MedVision AI</span><span>Medical Imaging</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Chức năng chính</div>
+                    <a href="index.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-pie"></i></span><span>Dashboard</span></a>
+                    <a href="diagnosis.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-microscope"></i></span><span>Chẩn đoán mới</span></a>
+                    <a href="patients.html" class="nav-item active"><span class="nav-icon"><i
+                                class="fa-solid fa-hospital-user"></i></span><span>Quản lý bệnh nhân</span></a>
+                    <a href="statistics.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-line"></i></span><span>Thống kê & Báo cáo</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Hệ thống</div>
+                    <a href="settings.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-gear"></i></span><span>Cài đặt</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-user">
+                <div class="user-avatar">BS</div>
+                <div class="user-info">
+                    <div class="user-name">Bác sĩ Nguyễn Văn A</div>
+                    <div class="user-role">Chẩn đoán hình ảnh</div>
+                </div>
+                <button class="user-logout" title="Đăng xuất" onclick="logout()"><i
+                        class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="page-header-left">
+                    <div>
+                        <div class="breadcrumb">
+                            <a href="patients.html">Bệnh nhân</a>
+                            <span class="separator">/</span>
+                            <span id="breadcrumbName">Chi tiết</span>
+                        </div>
+                        <h1 class="page-title" id="pageTitle">Chi tiết bệnh nhân</h1>
+                    </div>
+                </div>
+                <div class="page-header-right">
+                    <a href="diagnosis.html" class="btn btn-primary"><i class="fa-solid fa-microscope"></i> Chẩn đoán
+                        mới</a>
+                    <button class="btn btn-secondary"><i class="fa-solid fa-file-pdf"></i> Xuất PDF</button>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <!-- Patient Header Card -->
+                <div class="patient-header-card animate-fadeInUp" id="patientCard">
+                    <div class="patient-avatar" id="patientAvatar">BN</div>
+                    <div class="patient-main-info">
+                        <h1 id="patientName">—</h1>
+                        <div class="d-flex items-center gap-sm">
+                            <span class="badge badge-primary" id="patientCode">—</span>
+                            <span class="badge badge-dot" id="patientStatusBadge">—</span>
+                        </div>
+                        <div class="patient-meta">
+                            <div class="meta-item"><span class="meta-label">Tuổi</span><span class="meta-value"
+                                    id="patientAge">—</span></div>
+                            <div class="meta-item"><span class="meta-label">Giới tính</span><span class="meta-value"
+                                    id="patientGender">—</span></div>
+                            <div class="meta-item"><span class="meta-label">SĐT</span><span class="meta-value"
+                                    id="patientPhone">—</span></div>
+                            <div class="meta-item"><span class="meta-label">Địa chỉ</span><span class="meta-value"
+                                    id="patientAddress">—</span></div>
+                            <div class="meta-item"><span class="meta-label">Tiền sử bệnh</span><span class="meta-value"
+                                    id="patientHistory">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs" id="detailTabs">
+                    <button class="tab-item active" onclick="switchTab('history', this)">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử chẩn đoán
+                    </button>
+                    <button class="tab-item" onclick="switchTab('chart', this)">
+                        <i class="fa-solid fa-chart-line"></i> Biểu đồ theo dõi
+                    </button>
+                    <button class="tab-item" onclick="switchTab('reports', this)">
+                        <i class="fa-solid fa-file-medical"></i> Báo cáo
+                    </button>
+                </div>
+
+                <!-- Tab: History Timeline -->
+                <div class="tab-content active" id="tab-history">
+                    <div class="timeline" id="diagnosisTimeline">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Tab: Chart -->
+                <div class="tab-content" id="tab-chart">
+                    <div class="tracking-chart-container">
+                        <h3 class="mb-md"><i class="fa-solid fa-chart-line"></i> Theo dõi kích thước khối u</h3>
+                        <canvas id="tumorTrackingChart" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tab: Reports -->
+                <div class="tab-content" id="tab-reports">
+                    <div class="empty-state">
+                        <div class="empty-icon">📄</div>
+                        <h3>Chưa có báo cáo</h3>
+                        <p>Báo cáo sẽ được tạo sau khi bác sĩ hoàn tất chẩn đoán và xác nhận kết luận.</p>
+                        <button class="btn btn-primary mt-lg"><i class="fa-solid fa-plus"></i> Tạo báo cáo mới</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>if (!checkAuth()) throw new Error('Not authenticated');</script>
+    <script src="assets/js/patient-detail.js"></script>
+</body>
+
+</html>

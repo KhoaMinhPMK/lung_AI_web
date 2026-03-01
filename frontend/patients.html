@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bệnh nhân — MedVision AI</title>
+    <meta name="description" content="Quản lý hồ sơ bệnh nhân trong hệ thống MedVision AI">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/patients.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">🫁</div>
+                <div class="logo-text"><span>MedVision AI</span><span>Medical Imaging</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Chức năng chính</div>
+                    <a href="index.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-pie"></i></span><span>Dashboard</span></a>
+                    <a href="diagnosis.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-microscope"></i></span><span>Chẩn đoán mới</span></a>
+                    <a href="patients.html" class="nav-item active"><span class="nav-icon"><i
+                                class="fa-solid fa-hospital-user"></i></span><span>Quản lý bệnh nhân</span></a>
+                    <a href="statistics.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-chart-line"></i></span><span>Thống kê & Báo cáo</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Hệ thống</div>
+                    <a href="settings.html" class="nav-item"><span class="nav-icon"><i
+                                class="fa-solid fa-gear"></i></span><span>Cài đặt</span></a>
+                </div>
+            </nav>
+            <div class="sidebar-user">
+                <div class="user-avatar">BS</div>
+                <div class="user-info">
+                    <div class="user-name">Bác sĩ Nguyễn Văn A</div>
+                    <div class="user-role">Chẩn đoán hình ảnh</div>
+                </div>
+                <button class="user-logout" title="Đăng xuất" onclick="logout()"><i
+                        class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="page-header-left">
+                    <div>
+                        <h1 class="page-title">Quản lý bệnh nhân</h1>
+                        <p class="page-subtitle">Danh sách và hồ sơ bệnh nhân trong hệ thống</p>
+                    </div>
+                </div>
+                <div class="page-header-right">
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <i class="fa-solid fa-plus"></i> Thêm bệnh nhân mới
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-body">
+                <!-- Toolbar -->
+                <div class="patients-toolbar animate-fadeInUp">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Tìm theo tên hoặc mã bệnh nhân..."
+                            oninput="filterPatients()">
+                    </div>
+                    <div class="filter-chips">
+                        <button class="chip active" onclick="filterByStatus(this, 'all')">Tất cả</button>
+                        <button class="chip" onclick="filterByStatus(this, 'Đang theo dõi')">Đang theo dõi</button>
+                        <button class="chip" onclick="filterByStatus(this, 'Hoàn tất')">Hoàn tất</button>
+                        <button class="chip" onclick="filterByStatus(this, 'Mới')">Mới</button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="card animate-fadeInUp">
+                    <div class="table-wrapper">
+                        <table class="table" id="patientsTable">
+                            <thead>
+                                <tr>
+                                    <th>Mã BN</th>
+                                    <th>Họ và tên</th>
+                                    <th>Tuổi</th>
+                                    <th>Giới tính</th>
+                                    <th>SĐT</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="patientModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="modalTitle">Thêm bệnh nhân mới</h2>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="patientForm">
+                    <input type="hidden" id="editId">
+                    <div class="grid-2" style="gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Mã bệnh nhân</label>
+                            <input type="text" class="form-input" id="formCode" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Họ và tên <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="formName" placeholder="Nhập họ và tên" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ngày sinh <span class="required">*</span></label>
+                            <input type="date" class="form-input" id="formDob" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giới tính</label>
+                            <select class="form-select" id="formGender">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-input" id="formPhone" placeholder="0912345678">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" id="formStatus">
+                                <option value="Mới">Mới</option>
+                                <option value="Đang theo dõi">Đang theo dõi</option>
+                                <option value="Hoàn tất">Hoàn tất</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-input" id="formAddress" placeholder="Nhập địa chỉ">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tiền sử bệnh</label>
+                        <textarea class="form-textarea" id="formHistory"
+                            placeholder="Nhập tiền sử bệnh (quan trọng cho AI phân tích)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú bác sĩ</label>
+                        <textarea class="form-textarea" id="formNotes" placeholder="Ghi chú thêm..."
+                            style="min-height: 60px;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="savePatient()"><i class="fa-solid fa-check"></i> Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>if (!checkAuth()) throw new Error('Not authenticated');</script>
+    <script src="assets/js/patients.js"></script>
+</body>
+
+</html>

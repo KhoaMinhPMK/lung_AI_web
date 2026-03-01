@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — MedVision AI</title>
+    <meta name="description" content="Trang tổng quan hệ thống hỗ trợ chẩn đoán tổn thương phổi">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- ===== SIDEBAR (rendered by components.js) ===== -->
+        <div id="sidebar-root"></div>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="page-header-left">
+                    <button class="btn btn-icon btn-ghost d-none" id="menuToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 class="page-title">Dashboard</h1>
+                        <p class="page-subtitle">Tổng quan hoạt động hệ thống</p>
+                    </div>
+                </div>
+                <div class="page-header-right">
+                    <div class="badge badge-success badge-dot">Hệ thống hoạt động</div>
+                    <a href="diagnosis.html" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> Chẩn đoán mới
+                    </a>
+                </div>
+            </header>
+
+            <!-- Page Body -->
+            <div class="page-body">
+                <!-- Welcome -->
+                <div class="welcome-section animate-fadeInUp">
+                    <h1>Xin chào, Bác sĩ Nguyễn! <span class="wave">👋</span></h1>
+                    <p class="welcome-date" id="currentDate"></p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid stagger">
+                    <div class="stat-card blue animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-hospital-user"></i></div>
+                        <div class="stat-value" id="totalPatients">128</div>
+                        <div class="stat-label">Tổng bệnh nhân</div>
+                    </div>
+                    <div class="stat-card purple animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-microscope"></i></div>
+                        <div class="stat-value" id="totalDiagnoses">356</div>
+                        <div class="stat-label">Ca đã chẩn đoán</div>
+                    </div>
+                    <div class="stat-card red animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="stat-value" id="tumorCases">47</div>
+                        <div class="stat-label">Phát hiện tổn thương nghi ngờ</div>
+                    </div>
+                    <div class="stat-card green animate-fadeInUp">
+                        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="stat-value" id="normalCases">309</div>
+                        <div class="stat-label">Bình thường</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-section">
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-column"></i> Ca chẩn đoán theo tháng</h3>
+                            <select class="form-select" style="width: auto; padding: 6px 12px; font-size: 12px;">
+                                <option>12 tháng gần nhất</option>
+                                <option>6 tháng gần nhất</option>
+                            </select>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card animate-fadeInUp">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Tỉ lệ kết quả</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="resultPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-section animate-fadeInUp">
+                    <div class="section-header">
+                        <h2><i class="fa-solid fa-clock-rotate-left"></i> Hoạt động gần đây</h2>
+                        <a href="statistics.html" class="btn btn-ghost btn-sm">Xem tất cả <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon tumor"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-name">Trần Thị Mai</div>
+                                <div class="activity-detail">AI gợi ý 2 tổn thương nghi ngờ — 12.3mm × 8.7mm —
+                                    Lung-RADS:
+                                    <span class="text-danger fw-600">4B</span>
+                                </div>
+                            </div>
+                            <div class="activity-time">15 phút trước</div>
+                            <div class="activity-action">
+                                <a href="diagnosis.html" class="btn btn-secondary btn-sm">Xem</a>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon normal"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-name">Nguyễn Văn Hùng</div>
+                                <div class="activity-detail">Không phát hiện bất thường — Độ tin cậy: 98.2%</div>
+                            </div>
+                            <div class="activity-time">1 giờ trước</div>
+                            <div class="activity-action">
+                                <a href="diagnosis.html" class="btn btn-secondary btn-sm">Xem</a>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon tumor"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-name">Lê Hoàng Nam</div>
+                                <div class="activity-detail">AI gợi ý 1 tổn thương nghi ngờ — 6.1mm × 5.2mm — Lung-RADS:
+                                    <span class="text-warning fw-600">3</span>
+                                </div>
+                            </div>
+                            <div class="activity-time">2 giờ trước</div>
+                            <div class="activity-action">
+                                <a href="diagnosis.html" class="btn btn-secondary btn-sm">Xem</a>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon normal"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-name">Phạm Thị Lan</div>
+                                <div class="activity-detail">Không phát hiện bất thường — Độ tin cậy: 96.8%</div>
+                            </div>
+                            <div class="activity-time">3 giờ trước</div>
+                            <div class="activity-action">
+                                <a href="diagnosis.html" class="btn btn-secondary btn-sm">Xem</a>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon normal"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-name">Đỗ Minh Tuấn</div>
+                                <div class="activity-detail">Không phát hiện bất thường — Độ tin cậy: 99.1%</div>
+                            </div>
+                            <div class="activity-time">Hôm qua</div>
+                            <div class="activity-action">
+                                <a href="diagnosis.html" class="btn btn-secondary btn-sm">Xem</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Disclaimer -->
+                <div class="disclaimer mt-xl animate-fadeInUp">
+                    <span class="disclaimer-icon">⚠️</span>
+                    <div>
+                        <strong>Lưu ý:</strong> Kết quả AI chỉ mang tính chất <strong>tham khảo</strong>. Quyết định
+                        chẩn đoán và điều trị cuối cùng thuộc về bác sĩ chuyên khoa.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>if (!checkAuth()) throw new Error('Not authenticated');</script>
+    <script src="assets/js/services/api.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script>initPageLayout('dashboard', 'Dashboard', 'Tổng quan hoạt động hệ thống', '<a href="diagnosis.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Chẩn đoán mới</a>');</script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+
+</html>

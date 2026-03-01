@@ -155,11 +155,25 @@
 }
 
 .login-form .form-input-icon .icon-right {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: unset;
     color: rgba(255, 255, 255, 0.4);
+    font-size: 16px;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 2;
 }
 
 .login-form .form-input-icon .icon-right:hover {
     color: rgba(255, 255, 255, 0.8);
+}
+
+/* Make room for the eye icon */
+.login-form .form-group:last-of-type .form-input {
+    padding-right: 44px;
 }
 
 .login-form .btn-login {

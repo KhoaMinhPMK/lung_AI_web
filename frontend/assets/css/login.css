@@ -154,12 +154,12 @@
     padding-left: 44px;
 }
 
-.login-form .form-input-icon .icon-right {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    left: unset;
+#togglePassword {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: unset !important;
     color: rgba(255, 255, 255, 0.4);
     font-size: 16px;
     cursor: pointer;
@@ -167,13 +167,13 @@
     z-index: 2;
 }
 
-.login-form .form-input-icon .icon-right:hover {
+#togglePassword:hover {
     color: rgba(255, 255, 255, 0.8);
 }
 
 /* Make room for the eye icon */
 .login-form .form-group:last-of-type .form-input {
-    padding-right: 44px;
+    padding-right: 44px !important;
 }
 
 .login-form .btn-login {
